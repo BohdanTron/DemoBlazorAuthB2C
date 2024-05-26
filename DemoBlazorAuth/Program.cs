@@ -1,5 +1,6 @@
 using DemoBlazorAuth.Data;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 
@@ -33,6 +34,14 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRewriter(new RewriteOptions().Add(context =>
+{
+    if (context.HttpContext.Request.Path == "/MicrosoftIdentity/Account/SignedOut")
+    {
+        context.HttpContext.Response.Redirect("/");
+    }
+}));
 
 app.MapControllers();
 app.MapBlazorHub();
